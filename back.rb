@@ -35,16 +35,16 @@ live_loop :ringo do
 end
 
 live_loop :paul, sync: :ringo do
-  section = 'a'
-  nt_ring = [:d, :f, :a].ring
-  ch_ring = [:minor, :major, :minor].ring
-  sus = rrand(4,7)
-  dens = [1]
-  if section == 'b'
-    dens = [1,1,1,1,1,2,4,0.5]
-    sus = 2
-  end
   time_warp -0.01 do
+    section = 'a'
+    nt_ring = [:d, :f, :a].ring
+    ch_ring = [:minor, :major, :minor].ring
+    sus = rrand(4,7)
+    dens = [1]
+    if section == 'b'
+      dens = [1,1,1,1,1,2,4,0.5]
+      sus = 2
+    end
     tick
     set :nt, nt_ring.look
     set :ch, ch_ring.look
@@ -59,11 +59,8 @@ with_fx :reverb do
   live_loop :john, sync: :paul do
     ##| stop
     tick(:a)
-    if factor?(look(:a), 2)
-      tick(:b)
-    end
-    d = get[:dens]
-    density d.choose do
+    get[:dens] #¯\_(ツ)_/¯
+    density (get[:dens]).choose do
       on [0,1,0,0,1,0,0,0,1,0,0,0].ring.look(:a) do
         sample "/home/jsanjuan/DrumHits/Kick.wav", amp: 0.6
       end
@@ -73,7 +70,7 @@ with_fx :reverb do
       on [0,0,0,0,0,0,0,1].ring.look(:a) do
         sample "/home/jsanjuan/DrumHits/Snare.wav", amp: 0.5
       end
-      on [0,0,0,[1,0,0].ring.look(:b),0,0,0,0].ring.look(:a) do
+      on [0,0,0,[1,0,0].ring.tick(:b),0,0,0,0].ring.look(:a) do
         sample "/home/jsanjuan/DrumHits/OpenHat.wav", amp: 0.3
       end
       sleep 0.15
