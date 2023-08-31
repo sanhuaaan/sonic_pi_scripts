@@ -23,28 +23,31 @@ end
 
 live_loop :ringo do
   ##| stop
-  sleep_time = 0.6
   4.times do |i|
     #volca bass
-    midi_clock_beat sleep_time port: 'ch345_ch345_midi_1_20_0'
+    midi_clock_beat port: 'ch345_ch345_midi_1_20_0'
     #nts-1
-    midi_clock_beat sleep_time port: 'nts-1_digital_kit_nts-1_digital_kit_nts-1_digital_24_0'
+    midi_clock_beat port: 'nts-1_digital_kit_nts-1_digital_kit_nts-1_digital_24_0'
     #sq-1
-    midi_clock_beat sleep_time port: 'sq-1_sq-1_sq-1___ctrl_28_1' #if factor?(i, 2)
-    sleep sleep_time
+    midi_clock_beat port: 'sq-1_sq-1_sq-1___ctrl_28_1' #if factor?(i, 2)
+    sleep 0.6
   end
 end
 
 live_loop :paul, sync: :ringo do
+  section = 'a'
+  sus = rrand(4,7)
+  space = 1
+  dens = [1]
   time_warp -0.01 do
-    section = 'a'
     nt_ring = [:d, :f, :a].ring
     ch_ring = [:minor, :major, :minor].ring
-    sus = rrand(4,7)
-    dens = [1]
     if section == 'b'
+      space = rrand(-1,0)
+      nt_ring = [[:g3],[:g4],[:g5]].choose
+      ch_ring = [:minor]
+      sus = [2,3,4].choose
       dens = [1,1,1,1,1,2,4,0.5]
-      sus = 2
     end
     tick
     set :nt, nt_ring.look
@@ -53,7 +56,7 @@ live_loop :paul, sync: :ringo do
     set :dens, dens
   end
   cue :paul
-  sleep get[:sus] + 1
+  sleep get[:sus] + space
 end
 
 with_fx :reverb do
@@ -62,7 +65,7 @@ with_fx :reverb do
     tick(:a)
     dens = get[:dens]
     if (dens == nil)
-      dens = 1
+      dens = [1]
     end
     density (dens).choose do
       on [0,1,0,0,1,0,0,0,1,0,0,0].ring.look(:a) do
@@ -95,6 +98,7 @@ live_loop :george, sync: :billy do
 end
 
 live_loop :billy do
+  ##| stop
   sync :paul
   midi get[:nt] - [12,24].choose,
     sustain: get[:sus],
