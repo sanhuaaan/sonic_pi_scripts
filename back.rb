@@ -23,14 +23,15 @@ end
 
 live_loop :ringo do
   ##| stop
+  sleep_time = 0.6
   4.times do |i|
     #volca bass
-    midi_clock_beat port: 'ch345_ch345_midi_1_20_0'
+    midi_clock_beat sleep_time port: 'ch345_ch345_midi_1_20_0'
     #nts-1
-    midi_clock_beat port: 'nts-1_digital_kit_nts-1_digital_kit_nts-1_digital_24_0'
+    midi_clock_beat sleep_time port: 'nts-1_digital_kit_nts-1_digital_kit_nts-1_digital_24_0'
     #sq-1
-    midi_clock_beat port: 'sq-1_sq-1_sq-1___ctrl_28_1' #if factor?(i, 2)
-    sleep 0.6
+    midi_clock_beat sleep_time port: 'sq-1_sq-1_sq-1___ctrl_28_1' #if factor?(i, 2)
+    sleep sleep_time
   end
 end
 
@@ -56,11 +57,14 @@ live_loop :paul, sync: :ringo do
 end
 
 with_fx :reverb do
-  live_loop :john, sync: :paul do
+  live_loop :john, sync: :ringo do
     ##| stop
     tick(:a)
-    get[:dens] #¯\_(ツ)_/¯
-    density (get[:dens]).choose do
+    dens = get[:dens]
+    if (dens == nil)
+      dens = 1
+    end
+    density (dens).choose do
       on [0,1,0,0,1,0,0,0,1,0,0,0].ring.look(:a) do
         sample "/home/jsanjuan/DrumHits/Kick.wav", amp: 0.6
       end
@@ -78,8 +82,8 @@ with_fx :reverb do
   end
 end
 
-live_loop :george, sync: :paul do
-  stop
+live_loop :george, sync: :billy do
+  ##| stop
   use_random_seed 555
   16.times do
     use_transpose -12
