@@ -1,8 +1,14 @@
 use_bpm 120
 folder="/home/jsanjuan/musicradar-808-samples/Hits/"
+defonce :novation do
+  {
+    'ringo_1' => false
+  }
+end
+
 
 live_loop :ringo do
-  stop
+  ##| stop
   in_thread do
     8.times do
       tick
@@ -18,12 +24,14 @@ live_loop :ringo do
     tick
     if factor? look, 2
       time_warp -0.2 do
-        midi_clock_beat port: 'ch345_ch345_midi_1_24_0'
+        ##| midi_clock_beat port: 'ch345_ch345_midi_1_24_0'
       end
     end
     
     on [1,0,1,0,1,0,1,0].ring.look do
-      sample folder + "Bass Drum [BD]/E808_BD[short]-03.wav", amp: 2
+      if novation['ringo_1']
+        sample folder + "Bass Drum [BD]/E808_BD[short]-03.wav", amp: 2
+      end
     end
     on [0,0,0,1,0,0,0,1].ring.look do
       with_swing -0.25, pulse: 2 do
@@ -82,6 +90,16 @@ live_loop :george, sync: :ringo do
       end
     end
     sleep 1
+  end
+end
+
+live_loop :loop_control do
+  use_real_time
+  val, velocity = sync "/midi*9/note_on"
+  case val
+  when 9
+    novation['ringo_1'] = !novation['ringo_1']
+    print 'ringo_1 ' + String(novation['ringo_1'])
   end
 end
 
