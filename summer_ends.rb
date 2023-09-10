@@ -108,16 +108,16 @@ live_loop :john, sync: :ringo do
 end
 
 live_loop :george, sync: :ringo do
-  use_random_seed 4
-  32.times do
+  use_random_seed 3333
+  [10,16].ring.tick.times do
     if novation['george']
       time_warp -0.15 do
-        midi (scale :b1, :mixolydian, num_octaves: 2).choose,
+        midi (scale :b2, :mixolydian, num_octaves: 2).choose,
           sustain: [0.2, 0.5].choose,
-          port: 'ch345_ch345_midi_1_24_0' unless one_in 5
+          port: 'ch345_ch345_midi_1_24_0' unless one_in 4
       end
     end
-    sleep [0.25,0.5].choose
+    sleep 0.25
   end
 end
 
