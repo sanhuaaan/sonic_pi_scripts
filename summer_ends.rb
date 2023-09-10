@@ -126,34 +126,28 @@ live_loop :control do
   value, velocity = sync "/midi*1/control_change"
   case value
   when 2
-    novation['paul'] = !novation['paul']
+    key='paul'
   when 3
-    novation['john'] = !novation['john']
+    key='john'
   when 4
-    novation['george'] = !novation['george']
+    key='george'
   when 6
-    novation['ringo_1'] = !novation['ringo_1']
+    key='ringo_1'
   when 7
-    novation['ringo_2'] = !novation['ringo_2']
+    key='ringo_2'
   when 8
-    novation['ringo_3'] = !novation['ringo_3']
+    key='ringo_3'
   when 9
-    novation['ringo_4'] = !novation['ringo_4']
+    key='ringo_4'
   when 116
-    novation['ringo_5'] = !novation['ringo_5']
+    key='ringo_5'
   when 117
-    novation['ringo_6'] = !novation['ringo_6']
+    key='ringo_6'
   end
-  print 'paul ' + String(novation['paul'])
-  print 'john ' + String(novation['john'])
-  print 'george ' + String(novation['george'])
-  print 'ringo_1 ' + String(novation['ringo_1'])
-  print 'ringo_2 ' + String(novation['ringo_2'])
-  print 'ringo_3 ' + String(novation['ringo_3'])
-  print 'ringo_4 ' + String(novation['ringo_4'])
-  print 'ringo_5 ' + String(novation['ringo_5'])
-  print 'ringo_6 ' + String(novation['ringo_6'])
-  print '####################################'
+  novation[key] = !novation[key]
+  for key in ['paul','john','george','ringo_1','ringo_2','ringo_3','ringo_4','ringo_5','ringo_6'] do
+    print key + ' ' + String(novation[key])
+  end
 end
 
 
