@@ -48,7 +48,7 @@ live_loop :ringo do
   16.times do
     tick
     if factor? look, 2
-      time_warp -0.15 do
+      time_warp -0.2 do
         midi_clock_beat #port: 'ch345_ch345_midi_1_24_0'
       end
     end
@@ -76,10 +76,10 @@ live_loop :ringo do
       end
     end
     if novation['ringo_4']
-      on spread(5,16, rotate: 3).look do
-        with_swing -0.25, pulse: 4 do
-          sample folder + "Congas [HC-MC-LC]/E808_MC-08.wav", cutoff: 100
-        end
+      on spread(5,12).look do
+        ##| with_swing -0.25, pulse: 4 do
+        sample folder + "Congas [HC-MC-LC]/E808_MC-08.wav", cutoff: 100
+        ##| end
       end
     end
     sleep 0.5
@@ -98,13 +98,14 @@ live_loop :paul, sync: :ringo do
   sleep 4
 end
 
-live_loop :john, sync: :ringo do
-  s = "/home/jsanjuan/musicradar-808-samples/manson_believe_me.wav"
-  if novation['john']
+live_loop :john do
+  use_real_time
+  value, velocity = sync "/midi*1/control_change"
+  if (value == 3)
+    s = "/home/jsanjuan/musicradar-808-samples/war_games/" + ["1","2","3","4","5","6"].ring.tick + ".wav"
     sample s
     novation['john'] = false
   end
-  sleep sample_duration s
 end
 
 live_loop :george, sync: :ringo do
